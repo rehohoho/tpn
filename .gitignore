@@ -108,6 +108,5 @@ mmaction/version.py
 .vscode
 .idea
 
-data/
-pretrained/
-README*
+data
+pretrained
