@@ -148,11 +148,12 @@ class TSN2D(BaseRecognizer):
                 num_seg = 1
 
             if self.with_spatial_temporal_module:
-                x = self.spatial_temporal_module(x)
-            x = x.reshape((-1, num_seg) + x.shape[1:])
+                x = self.spatial_temporal_module(x.squeeze())
+            # x = x.reshape((-1, num_seg) + x.shape[1:])
             if self.with_segmental_consensus:
                 x = self.segmental_consensus(x)
-                x = x.squeeze(1)
+                # x = x.squeeze(1)
+            x = x.unsqueeze(0)
             if self.with_cls_head:
                 x = self.cls_head(x)
 
