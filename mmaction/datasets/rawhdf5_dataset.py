@@ -30,15 +30,14 @@ class RawHdf5Dataset(RawFramesDataset):
         video_path = osp.join(self.img_prefix, record.path)
         video = h5py.File(video_path, 'r')['video']
         for seg_ind in indices:
-            p = int(seg_ind)
+            p = int(seg_ind) - 1 # frame index starts from 0 instead of 1
             for i, ind in enumerate(range(0, self.old_length, self.new_step)):
                 if p + skip_offsets[i] <= record.num_frames:
                     idx = p + skip_offsets[i]
                 else:
                     idx = p
                 try:
-                    # convert BGR?
-                    im = Image.open(io.BytesIO(video[idx])).convert('RGB')
+                    im = Image.open(io.BytesIO(video[idx]))
                     images.extend([np.array(im)])
                 except Exception as e:
                     raise Exception(e)
@@ -46,15 +45,3 @@ class RawHdf5Dataset(RawFramesDataset):
                     p += self.new_step
         
         return images
-
-    def _sample_indices(self, record):
-        offsets, skip_offset = super(RawHdf5Dataset, self)._sample_indices(record)
-        return offsets - 1, skip_offset # frame index starts from 0 instead of 1
-
-    def _get_val_indices(self, record):
-        offsets, skip_offset = super(RawHdf5Dataset, self)._sample_indices(record)
-        return offsets - 1, skip_offset # frame index starts from 0 instead of 1
-    
-    def _get_test_indices(self, record):
-        offsets, skip_offset = super(RawHdf5Dataset, self)._sample_indices(record)
-        return offsets - 1, skip_offset # frame index starts from 0 instead of 1
