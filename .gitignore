@@ -110,3 +110,4 @@ mmaction/version.py
 
 data
 pretrained
+work_dirs
